@@ -15,6 +15,7 @@
 </head>
 <body>
 <h1>Hello World</h1>
+<button id="locateBtn">Find My Location</button>
 <div id="map"></div>
 
 <script>
@@ -24,6 +25,30 @@
         center: [0, 0], // Default center coordinates (longitude, latitude)
         zoom: 2 // Default zoom level
     });
+
+    // Function to get user's location
+    function locateUser() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userCoords = [position.coords.longitude, position.coords.latitude];
+
+                // Update map center
+                map.flyTo({ center: userCoords, zoom: 12 });
+
+                // Add marker
+                new maplibregl.Marker()
+                    .setLngLat(userCoords)
+                    .addTo(map);
+            }, error => {
+                alert("Error getting location: " + error.message);
+            });
+        } else {
+            alert("Geolocation not supported by your browser.");
+        }
+    }
+
+    // Attach function to button
+    document.getElementById('locateBtn').addEventListener('click', locateUser);
 </script>
 </body>
 </html>
