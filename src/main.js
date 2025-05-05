@@ -23,6 +23,19 @@ function initializeMap(mapCenter, zoom) {
         map.addControl(new maplibregl.FullscreenControl());
         map.addControl(new maplibregl.ScaleControl());
 
+        // Add city boundary (starting with NYC)
+        fetch("/newyorkcity.geojson")
+            .then(response => response.json())
+            .then(data => {
+                map.addSource("city-boundary", { type: "geojson", data });
+                map.addLayer({
+                    id: "city-fill",
+                    type: "fill",
+                    source: "city-boundary",
+                    paint: { "fill-color": "#ff0000", "fill-opacity": 0.5 }
+                });
+            });
+        /*
         // Add a GeoJSON source for the circle
         const cirCenter = [-83.2393, 42.7845];
         const radius = 1609; // 1 mile in meters
@@ -43,6 +56,7 @@ function initializeMap(mapCenter, zoom) {
                 'fill-opacity': 0.5
             }
         });
+         */
     });
 }
 
@@ -63,3 +77,5 @@ else
 {
     initializeMap([0,0], 2);
 }
+
+//https://overpass-api.de/api/interpreter?data=[out:json];relation(175905);out geom;
