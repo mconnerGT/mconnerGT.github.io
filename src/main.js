@@ -1,5 +1,7 @@
 import maplibregl from "maplibre-gl";
 import circleToPolygon from "circle-to-polygon";
+import "maplibre-gl/dist/maplibre-gl.css";
+
 
 const map = new maplibregl.Map({
     container: 'map',
@@ -8,18 +10,6 @@ const map = new maplibregl.Map({
     zoom: 2 // Default zoom level
 });
 
-// Add controls
-map.addControl(new maplibregl.NavigationControl({
-    showZoom: true,  // Enables zoom buttons
-    showCompass: true // Enables the compass
-}));
-map.addControl(new maplibregl.GeolocateControl({
-    positionOptions: { enableHighAccuracy: true },
-    trackUserLocation: true // Keeps tracking the user’s movement
-}));
-map.addControl(new maplibregl.FullscreenControl());
-map.addControl(new maplibregl.ScaleControl());
-
 const center = [-83.2393, 42.7845];
 radius = 1609; // 1 mile in meters
 
@@ -27,6 +17,18 @@ const polygon = circleToPolygon(center, radius);
 
 map.on('load', () => {
 
+    // Add controls
+    map.addControl(new maplibregl.NavigationControl({
+        showZoom: true,  // Enables zoom buttons
+        showCompass: true // Enables the compass
+    }));
+    map.addControl(new maplibregl.GeolocateControl({
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: true // Keeps tracking the user’s movement
+    }));
+    map.addControl(new maplibregl.FullscreenControl());
+    map.addControl(new maplibregl.ScaleControl());
+    
     // Add a GeoJSON source for the circle
     map.addSource('circle-source', {
         type: 'geojson',
