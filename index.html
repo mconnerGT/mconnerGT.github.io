@@ -35,6 +35,47 @@
     }));
     map.addControl(new maplibregl.FullscreenControl());
     map.addControl(new maplibregl.ScaleControl());
+
+    function createCircle(center, radiusInMeters, points = 64) {
+        const coords = [];
+        for (let i = 0; i < points; i++) {
+            const angle = (i / points) * Math.PI * 2;
+            const dx = radiusInMeters * Math.cos(angle) / 111319.9; // Convert meters to degrees
+            const dy = radiusInMeters * Math.sin(angle) / 111319.9;
+            coords.push([center[0] + dx, center[1] + dy]);
+        }
+        coords.push(coords[0]); // Close the polygon
+
+        return {
+            type: 'Feature',
+            geometry: {
+                type: 'Polygon',
+                coordinates: [coords]
+            }
+        };
+    }
+
+    map.on('load', () => {
+        // Define the center point (replace with your actual coordinates)
+        const center = [-83.2393, 42.7845];
+
+        // Add a GeoJSON source for the circle
+        map.addSource('circle-source', {
+            type: 'geojson',
+            data: createCircle(center, 1609)
+        });
+
+        // Add a layer to render the circle
+        map.addLayer({
+            id: 'circle-layer',
+            type: 'fill',
+            source: 'circle-source',
+            paint: {
+                'fill-color': '#ff0000', // Red color
+                'fill-opacity': 0.5
+            }
+        });
+    });
 </script>
 </body>
 </html>
